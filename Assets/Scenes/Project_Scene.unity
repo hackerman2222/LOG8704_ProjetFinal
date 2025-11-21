@@ -475,6 +475,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   punchingBagPrefab: {fileID: 3387139524267002187, guid: b9195c3d4a8e5da4f94c9a2d56b3f36e, type: 3}
+  punchingBagPrefab2: {fileID: 2130331530761912223, guid: d661f645c81f29b4aa596207971ae441, type: 3}
   rightHandAnchor: {fileID: 1260403341}
   floorLayer:
     serializedVersion: 2

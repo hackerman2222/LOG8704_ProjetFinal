@@ -4,6 +4,7 @@ using Oculus.Interaction.Input;
 public class PunchingBagPlacer : MonoBehaviour
 {
     public GameObject punchingBagPrefab;
+    public GameObject punchingBagPrefab2;
     public Transform rightHandAnchor; // Assign RightHandAnchor
     public LayerMask floorLayer;      // Optional: set if you have floor colliders
     public float maxDistance = 5f;
@@ -22,7 +23,7 @@ public class PunchingBagPlacer : MonoBehaviour
                 // fallback: spawn at ground level in front of player
                 Vector3 pos = rightHandAnchor.position + rightHandAnchor.forward * 2f;
                 pos.y = 0f;
-                Instantiate(punchingBagPrefab, pos, Quaternion.identity);
+                Instantiate(punchingBagPrefab2, pos, Quaternion.identity);
             }
         }
     }
