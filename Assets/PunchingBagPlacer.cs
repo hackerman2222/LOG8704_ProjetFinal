@@ -74,4 +74,12 @@ public class PunchingBagPlacer : MonoBehaviour
             Instantiate(punchingBagPrefab, punchingBagPlacement, Quaternion.identity);
         }
     }
+
+    void OnDisable()
+    {
+        if (hitIndicator != null)
+        {
+            hitIndicator.SetActive(false);
+        }
+    }
 }

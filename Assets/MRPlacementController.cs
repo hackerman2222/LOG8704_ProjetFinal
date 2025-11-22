@@ -1,40 +1,38 @@
 using UnityEngine;
+using Meta.XR.MRUtilityKit;
 
 public class MRPlacementController : MonoBehaviour
 {
-    [Header("References")]
-    public GameObject floorEffectMesh;      // Your floor visualization
-    public GameObject otherEffectMesh;      // Your other visualization
-    public GameObject punchingBagPlacerGO;  // Parent GameObject holding PunchingBagPlacer script + visuals
+    public GameObject punchingBagPlacerGO;
+    public EffectMesh mesh1;
+    public EffectMesh mesh2;
+
 
     private bool isEditMode = false;
 
     void Start()
     {
-        // Start with everything disabled
-        SetEditMode(false);
+        SetEditMode(false); // start disabled
     }
 
     void Update()
     {
-        if(OVRInput.GetDown(OVRInput.Button.Four, OVRInput.Controller.LTouch)) 
-        {
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
             ToggleEditMode();
-        }
     }
 
     public void SetEditMode(bool enabled)
     {
         isEditMode = enabled;
 
-        if (floorEffectMesh != null)
-            floorEffectMesh.SetActive(enabled);
+        mesh1.ToggleEffectMeshVisibility(enabled);
+        mesh2.ToggleEffectMeshVisibility(enabled);
 
+        // -----------------------------
+        // Punching bag placement system
+        // -----------------------------
         if (punchingBagPlacerGO != null)
-            punchingBagPlacerGO.SetActive(enabled);
-
-        if (otherEffectMesh != null)
-            otherEffectMesh.SetActive(enabled);
+            punchingBagPlacerGO.SetActive(enabled); 
     }
 
     public void ToggleEditMode()
@@ -42,4 +40,3 @@ public class MRPlacementController : MonoBehaviour
         SetEditMode(!isEditMode);
     }
 }
-
