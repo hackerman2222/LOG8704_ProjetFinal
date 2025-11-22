@@ -1,5 +1,6 @@
 using UnityEngine;
 using Oculus.Interaction.Input;
+using Meta.XR.MRUtilityKit;
 
 public class PunchingBagPlacer : MonoBehaviour
 {
@@ -34,7 +35,9 @@ public class PunchingBagPlacer : MonoBehaviour
     void Update()
     {
         Ray ray = new Ray(rightHandAnchor.position, rightHandAnchor.forward);
-        bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, maxDistance, floorLayer);
+
+        MRUKRoom room = MRUK.Instance.GetCurrentRoom();
+        bool hitSomething = room.Raycast(ray, maxDistance, out RaycastHit hit, out MRUKAnchor anchor);
 
         // --- Draw Ray ---
         if (lineRenderer != null)
@@ -61,7 +64,8 @@ public class PunchingBagPlacer : MonoBehaviour
         }
 
         // --- Spawn Punching Bag ---
-        if (hitSomething &&
+        if (hitSomething && 
+            anchor.AnchorLabels[0] == "FLOOR" &&
             OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
         {
             punchingBagPlacement = new Vector3(hit.point.x, hit.point.y + heightAdjust, hit.point.z);
