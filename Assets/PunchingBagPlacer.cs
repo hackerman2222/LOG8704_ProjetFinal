@@ -4,27 +4,68 @@ using Oculus.Interaction.Input;
 public class PunchingBagPlacer : MonoBehaviour
 {
     public GameObject punchingBagPrefab;
-    public GameObject punchingBagPrefab2;
-    public Transform rightHandAnchor; // Assign RightHandAnchor
-    public LayerMask floorLayer;      // Optional: set if you have floor colliders
-    public float maxDistance = 5f;
+    public Transform rightHandAnchor; 
+    public LayerMask floorLayer;
+    public float maxDistance = 10f;
+
+    // Visual ray objects
+    public LineRenderer lineRenderer;
+    public GameObject hitIndicator;
+
+    public float heightAdjust = 0.5f;
+
+    private Vector3 punchingBagPlacement;
+
+    void Start()
+    {
+        // Configure LineRenderer if assigned
+        if (lineRenderer != null)
+        {
+            lineRenderer.positionCount = 2;
+            lineRenderer.enabled = true;
+        }
+
+        if (hitIndicator != null)
+        {
+            hitIndicator.SetActive(false);
+        }
+    }
 
     void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+        Ray ray = new Ray(rightHandAnchor.position, rightHandAnchor.forward);
+        bool hitSomething = Physics.Raycast(ray, out RaycastHit hit, maxDistance, floorLayer);
+
+        // --- Draw Ray ---
+        if (lineRenderer != null)
         {
-            Ray ray = new Ray(rightHandAnchor.position, rightHandAnchor.forward);
-            if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, floorLayer))
+            Vector3 endPoint = hitSomething ? hit.point : ray.origin + ray.direction * maxDistance;
+            lineRenderer.SetPosition(0, ray.origin);
+            lineRenderer.SetPosition(1, endPoint);
+        }
+
+        // --- Hit Indicator ---
+        if (hitSomething)
+        {
+            if (hitIndicator != null)
             {
-                Instantiate(punchingBagPrefab, hit.point, Quaternion.identity);
+                hitIndicator.SetActive(true);
+                hitIndicator.transform.position = hit.point;
+                hitIndicator.transform.rotation = Quaternion.LookRotation(hit.normal);
             }
-            else
-            {
-                // fallback: spawn at ground level in front of player
-                Vector3 pos = rightHandAnchor.position + rightHandAnchor.forward * 2f;
-                pos.y = 0f;
-                Instantiate(punchingBagPrefab2, pos, Quaternion.identity);
-            }
+        }
+        else
+        {
+            if (hitIndicator != null)
+                hitIndicator.SetActive(false);
+        }
+
+        // --- Spawn Punching Bag ---
+        if (hitSomething &&
+            OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+        {
+            punchingBagPlacement = new Vector3(hit.point.x, hit.point.y + heightAdjust, hit.point.z);
+            Instantiate(punchingBagPrefab, punchingBagPlacement, Quaternion.identity);
         }
     }
 }
