@@ -4,7 +4,7 @@ using Meta.XR.MRUtilityKit;
 using System.Threading.Tasks;
 using UnityEngine.XR;
 
-public class PunchingBagPlacer : MonoBehaviour
+public class PunchingBagNotClean : MonoBehaviour
 {
     public GameObject punchingBagPrefab;
     public Transform rightHandAnchor; 
@@ -21,6 +21,10 @@ public class PunchingBagPlacer : MonoBehaviour
 
     void Start()
     {
+        // _ = InitializeSceneAsync();
+
+        SwitchToRoomScale();
+
         // Configure LineRenderer if assigned
         if (lineRenderer != null)
         {
@@ -33,6 +37,33 @@ public class PunchingBagPlacer : MonoBehaviour
             hitIndicator.SetActive(false);
         }
     }
+
+    private async Task InitializeSceneAsync()
+    {
+
+        var result = await MRUK.Instance.LoadSceneFromDevice(
+            requestSceneCaptureIfNoDataFound: false,
+            removeMissingRooms: true
+        );
+
+        if (result == MRUK.LoadDeviceResult.Success)
+        {
+            //OVRScene.RequestSpaceSetup();
+        }
+        else 
+        {
+            OVRScene.RequestSpaceSetup();
+        }
+    }
+
+    void SwitchToRoomScale()
+{
+    bool success = XRDevice.SetTrackingSpaceType(TrackingSpaceType.RoomScale);
+    if (success)
+        Debug.Log("Switched to Roomscale successfully!");
+    else
+        Debug.LogWarning("Failed to switch to Roomscale.");
+}
 
     void Update()
     {
