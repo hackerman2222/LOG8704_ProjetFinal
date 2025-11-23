@@ -1519,7 +1519,7 @@ GameObject:
   - component: {fileID: 2074148469}
   - component: {fileID: 2074148468}
   m_Layer: 0
-  m_Name: TEST
+  m_Name: MRPlacementController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
