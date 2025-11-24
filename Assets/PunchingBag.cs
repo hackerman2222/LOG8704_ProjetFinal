@@ -3,16 +3,18 @@ using UnityEngine;
 public class PunchingBag : MonoBehaviour
 {
     public float forceMultiplier = 4f;
+    public GameObject punchingBagPrefab;
 
     public Rigidbody rb;
 
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
-        // Apply force where the punch hits
-        rb.AddForceAtPosition(
-            collision.relativeVelocity * forceMultiplier,
-            collision.contacts[0].point,
-            ForceMode.Impulse
-        );
+        Rigidbody handRb = other.attachedRigidbody;
+        if (handRb != null)
+        {
+            Vector3 punchVelocity = new Vector3(1,1,1);
+            Vector3 hitPoint = other.ClosestPoint(transform.position);
+            rb.AddForceAtPosition(punchVelocity * forceMultiplier, hitPoint, ForceMode.Impulse);
+        }
     }
 }
