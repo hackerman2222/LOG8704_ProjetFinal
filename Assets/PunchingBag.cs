@@ -3,8 +3,6 @@ using UnityEngine;
 public class PunchingBag : MonoBehaviour
 {
     public float forceMultiplier = 4f;
-    public GameObject punchingBagPrefab;
-
     public Rigidbody rb;
 
     void OnTriggerEnter(Collider other)
