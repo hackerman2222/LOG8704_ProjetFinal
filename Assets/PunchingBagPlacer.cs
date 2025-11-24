@@ -15,7 +15,7 @@ public class PunchingBagPlacer : MonoBehaviour
     public LineRenderer lineRenderer;
     public GameObject hitIndicator;
 
-    public float heightAdjust = 0.5f;
+    public float heightAdjust = 0.25f;
 
     private Vector3 punchingBagPlacement;
 
