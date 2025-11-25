@@ -1,9 +1,33 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PunchingBag : MonoBehaviour
 {
     public float hapticDuration = 0.15f;
+
+    [Header("Combo Settings")]
+    [Tooltip("The time (in seconds) allowed between consecutive hits before the combo resets.")]
+    public float comboResetTime = 0.8f; 
+
+    [Header("Current Combo Data")]
+    [Tooltip("The current number of consecutive hits.")]
+    [SerializeField]
+    private int currentCombo = 0;
+
+    private float lastHitTime;
+
+    [Header("Events")]
+    public UnityEvent<int> OnComboUpdate; 
+
+
     private OVRInput.Controller controller;
+
+    void Start()
+    {
+
+        lastHitTime = Time.time;
+        OnComboUpdate.Invoke(currentCombo); 
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -21,9 +45,32 @@ public class PunchingBag : MonoBehaviour
             controller = OVRInput.Controller.RTouch;
         }
         
-        float impactForce = collision.relativeVelocity.magnitude;
+        Vector3 handVel = OVRInput.GetLocalControllerVelocity(controller);
+        float impactForce = handVel.magnitude;
         float intensity = Mathf.Clamp01(impactForce / 2.5f); 
 
         HapticInteractable.Instance.PlayHaptics(controller, intensity, hapticDuration);
+
+
+        // Combo 
+        float timeSinceLastHit = Time.time - lastHitTime;
+
+        if (timeSinceLastHit > comboResetTime)
+        {
+            // reset le combo si pas assez rapide 
+            currentCombo = 1; // Reset à 1 parceque c'est le coup qui compte en starter
+            Debug.Log($" New Combo Started: {currentCombo}");
+        }
+        else
+        {
+            //continue le combo si le coup est assez rapide
+            currentCombo++;
+            Debug.Log($"Combo Count: {currentCombo}");
+        }
+
+        // --- Update ---
+        lastHitTime = Time.time;
+        
+        OnComboUpdate.Invoke(currentCombo);
     }
 }
