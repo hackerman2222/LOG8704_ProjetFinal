@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using Meta.XR.Audio;
 
 public class PunchingBag : MonoBehaviour
 {
@@ -17,8 +18,10 @@ public class PunchingBag : MonoBehaviour
     private float lastHitTime;
 
     [Header("Events")]
-    public UnityEvent<int> OnComboUpdate; 
+    public UnityEvent<int> OnComboUpdate;
 
+    public AudioSource audioSource;
+    public AudioClip punchClip;
 
     private OVRInput.Controller controller;
 
@@ -50,6 +53,7 @@ public class PunchingBag : MonoBehaviour
         float intensity = Mathf.Clamp01(impactForce / 2.5f); 
 
         HapticInteractable.Instance.PlayHaptics(controller, intensity, hapticDuration);
+        PlayPunchSound(intensity);
 
 
         // Combo 
@@ -72,5 +76,13 @@ public class PunchingBag : MonoBehaviour
         lastHitTime = Time.time;
         
         OnComboUpdate.Invoke(currentCombo);
+    }
+
+    public void PlayPunchSound(float intensity)
+    {
+        if (audioSource == null || punchClip == null) return;
+
+        audioSource.pitch = Random.Range(0.9f, 1.1f);
+        audioSource.PlayOneShot(punchClip, intensity);
     }
 }
