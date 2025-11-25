@@ -28,7 +28,6 @@ public class PunchRecognizer : MonoBehaviour
     void RecognizePunch()
     {
         if (velocity.magnitude < 1f) return; // ignore tiny motion
-
     }
 
     void UpdateDebug()

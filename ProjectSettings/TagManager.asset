@@ -29,6 +29,8 @@ TagManager:
   - QDSUIToggleCheckboxRadio
   - QDSUITextInputField
   - Bag
+  - Left Controller
+  - Right Controller
   layers:
   - Default
   - TransparentFX
