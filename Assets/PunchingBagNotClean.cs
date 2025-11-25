@@ -4,9 +4,10 @@ using Meta.XR.MRUtilityKit;
 using System.Threading.Tasks;
 using UnityEngine.XR;
 
-public class PunchingBagNotClean : MonoBehaviour
+public class PunchingBagPlacerNottClean : MonoBehaviour
 {
     public GameObject punchingBagPrefab;
+    public GameObject punchingBagPreview;
     public Transform rightHandAnchor; 
     public LayerMask floorLayer;
     public float maxDistance = 10f;
@@ -15,16 +16,18 @@ public class PunchingBagNotClean : MonoBehaviour
     public LineRenderer lineRenderer;
     public GameObject hitIndicator;
 
-    public float heightAdjust = 0.5f;
+    public float heightAdjust = 1.25f;
 
     private Vector3 punchingBagPlacement;
+    private GameObject currentPreview;
 
     void Start()
     {
-        // _ = InitializeSceneAsync();
-
-        SwitchToRoomScale();
-
+        if (punchingBagPrefab != null) 
+        {
+            currentPreview = Instantiate(punchingBagPreview);
+            currentPreview.SetActive(false);
+        }
         // Configure LineRenderer if assigned
         if (lineRenderer != null)
         {
@@ -35,45 +38,27 @@ public class PunchingBagNotClean : MonoBehaviour
         if (hitIndicator != null)
         {
             hitIndicator.SetActive(false);
+            VRTextDebug.Instance.Set("FKYOU");
         }
     }
-
-    private async Task InitializeSceneAsync()
-    {
-
-        var result = await MRUK.Instance.LoadSceneFromDevice(
-            requestSceneCaptureIfNoDataFound: false,
-            removeMissingRooms: true
-        );
-
-        if (result == MRUK.LoadDeviceResult.Success)
-        {
-            //OVRScene.RequestSpaceSetup();
-        }
-        else 
-        {
-            OVRScene.RequestSpaceSetup();
-        }
-    }
-
-    void SwitchToRoomScale()
-{
-    bool success = XRDevice.SetTrackingSpaceType(TrackingSpaceType.RoomScale);
-    if (success)
-        Debug.Log("Switched to Roomscale successfully!");
-    else
-        Debug.LogWarning("Failed to switch to Roomscale.");
-}
 
     void Update()
     {
         Ray ray = new Ray(rightHandAnchor.position, rightHandAnchor.forward);
 
         MRUKRoom room = MRUK.Instance.GetCurrentRoom();
+        bool hitBag = Physics.Raycast(rightHandAnchor.position, rightHandAnchor.forward, out RaycastHit bagHit, maxDistance);
         bool hitSomething = room.Raycast(ray, maxDistance, out RaycastHit hit, out MRUKAnchor anchor);
 
+        if (hitBag && bagHit.collider.CompareTag("Bag")) 
+        {
+            lineRenderer.SetPosition(0, rightHandAnchor.position);
+            lineRenderer.SetPosition(1, bagHit.point);
+            hitSomething = false;
+        }
+        
         // --- Draw Ray ---
-        if (lineRenderer != null)
+        if (lineRenderer != null && !(hitBag && bagHit.collider.CompareTag("Bag")))
         {
             Vector3 endPoint = hitSomething ? hit.point : ray.origin + ray.direction * maxDistance;
             lineRenderer.SetPosition(0, ray.origin);
@@ -96,6 +81,25 @@ public class PunchingBagNotClean : MonoBehaviour
                 hitIndicator.SetActive(false);
         }
 
+        // --- Spawn Punching Bag preview---
+        if (hitSomething && 
+            anchor.AnchorLabels[0] == "FLOOR")
+        {
+            if (punchingBagPreview != null)
+            {
+                currentPreview.transform.position = new Vector3(hit.point.x, hit.point.y + heightAdjust, hit.point.z);
+                currentPreview.transform.rotation = Quaternion.LookRotation(hit.normal);
+                currentPreview.SetActive(true);
+            }
+        }
+        else 
+        {
+            if (punchingBagPreview != null)
+            {
+                punchingBagPreview.SetActive(false);
+            }
+        }
+
         // --- Spawn Punching Bag ---
         if (hitSomething && 
             anchor.AnchorLabels[0] == "FLOOR" &&
@@ -103,6 +107,19 @@ public class PunchingBagNotClean : MonoBehaviour
         {
             punchingBagPlacement = new Vector3(hit.point.x, hit.point.y + heightAdjust, hit.point.z);
             Instantiate(punchingBagPrefab, punchingBagPlacement, Quaternion.identity);
+        }
+    }
+
+    void OnDisable()
+    {
+        if (hitIndicator != null)
+        {
+            hitIndicator.SetActive(false);
+        }
+
+        if (punchingBagPreview != null)
+        {
+            currentPreview.SetActive(false);
         }
     }
 }
