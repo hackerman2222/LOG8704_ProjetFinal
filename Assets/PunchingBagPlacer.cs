@@ -22,6 +22,7 @@ public class PunchingBagPlacer : MonoBehaviour
     private Vector3 punchingBagPlacement;
     private GameObject redPreview;
     private GameObject greenPreview;
+    private GameObject selectedBag = null;
     private bool canPlace = false;
 
     void Start()
@@ -64,6 +65,29 @@ public class PunchingBagPlacer : MonoBehaviour
             lineRenderer.SetPosition(0, rightHandAnchor.position);
             lineRenderer.SetPosition(1, bagHit.point);
             hitSomething = false;
+            if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch)) 
+            {
+                if (selectedBag == bagHit.collider.gameObject) 
+                {
+                    SetBagOutline(selectedBag, false); 
+                    selectedBag = null;
+                }
+                else 
+                {
+                    if (selectedBag != null)
+                    {
+                        SetBagOutline(selectedBag, false); 
+                    }
+                    selectedBag = bagHit.collider.gameObject;
+                    SetBagOutline(selectedBag, true);
+                }
+            }
+        }
+
+        if (selectedBag != null && OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch)) 
+        {
+            Destroy(selectedBag);
+            selectedBag = null;
         }
         
         // --- Draw Ray ---
@@ -145,7 +169,16 @@ public class PunchingBagPlacer : MonoBehaviour
             OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
         {
             punchingBagPlacement = new Vector3(hit.point.x, hit.point.y + heightAdjust, hit.point.z);
-            Instantiate(punchingBagPrefab, punchingBagPlacement, Quaternion.identity);
+            if (selectedBag != null) 
+            {
+                Destroy(selectedBag);
+                selectedBag = Instantiate(punchingBagPrefab, punchingBagPlacement, Quaternion.identity);
+                SetBagOutline(selectedBag, true);
+            }
+            else 
+            {
+                Instantiate(punchingBagPrefab, punchingBagPlacement, Quaternion.identity);
+            }
         }
     }
 
@@ -186,6 +219,20 @@ public class PunchingBagPlacer : MonoBehaviour
         return true; // nothing in the way, safe to place
     }
 
+    private void SetBagOutline(GameObject bag, bool enable)
+    {
+        Outline outline = bag.GetComponent<Outline>();
+        if (outline != null)
+        {
+            outline.enabled = enable; // turn outline on/off
+            if (enable)
+            {
+                outline.OutlineColor = Color.green; // set the outline color
+                outline.OutlineWidth = 10f;          // optional: set width
+            }
+        }
+    }
+
     void OnDisable()
     {
         if (hitIndicator != null)
@@ -202,5 +249,7 @@ public class PunchingBagPlacer : MonoBehaviour
         {
             greenPreview.SetActive(false);
         }
+        SetBagOutline(selectedBag, false); 
+        selectedBag = null;
     }
 }
