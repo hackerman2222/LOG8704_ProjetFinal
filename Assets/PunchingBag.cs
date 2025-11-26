@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Meta.XR.Audio;
+using TMPro;
 
 public enum PunchType
 {
@@ -15,10 +16,11 @@ public class PunchingBag : MonoBehaviour
 {
     public float hapticDuration = 0.15f;
     public bool IsLeftHanded = false;
+    public Transform textCanvas;
 
     [Header("Combo Settings")]
     [Tooltip("The time (in seconds) allowed between consecutive hits before the combo resets.")]
-    public float comboResetTime = 0.8f; 
+    public float comboResetTime = 9f; 
 
     [Header("Current Combo Data")]
     [Tooltip("The current number of consecutive hits.")]
@@ -26,9 +28,6 @@ public class PunchingBag : MonoBehaviour
     private int currentCombo = 0;
 
     private float lastHitTime;
-
-    [Header("Events")]
-    public UnityEvent<int> OnComboUpdate;
 
     [Header("Punch Detection Settings")]
     public float jabForwardDot = 0.5f;      // mostly forward
@@ -43,12 +42,18 @@ public class PunchingBag : MonoBehaviour
 
     private OVRInput.Controller controller;
     private bool IsLeftPunch = false;
+    private TextMeshProUGUI comboText;
+
+    void Awake() {
+    if (comboText == null && textCanvas != null)
+        comboText = textCanvas.GetComponentInChildren<TextMeshProUGUI>();
+    }
 
     void Start()
     {
-
-        lastHitTime = Time.time;
-        OnComboUpdate.Invoke(currentCombo); 
+        lastHitTime = 0;
+        currentCombo = 1;
+        UpdateCombo(currentCombo);
     }
 
     void Update() 
@@ -56,6 +61,19 @@ public class PunchingBag : MonoBehaviour
         if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch)) 
         {
             IsLeftHanded = !IsLeftHanded;
+        }
+
+        float timeSinceLastHit = Time.time - lastHitTime;
+        if (timeSinceLastHit > comboResetTime)
+        {
+            //currentCombo = 0;
+            UpdateCombo(currentCombo);
+        }
+
+        if (textCanvas != null)
+        {
+            textCanvas.LookAt(Camera.main.transform);
+            textCanvas.Rotate(0,180,0);
         }
     }
 
@@ -89,27 +107,9 @@ public class PunchingBag : MonoBehaviour
         HapticInteractable.Instance.PlayHaptics(controller, 0.75f, hapticDuration);
         
         DetectPunch(handVel, collision.collider.transform);
-
-        // Combo 
-        float timeSinceLastHit = Time.time - lastHitTime;
-
-        if (timeSinceLastHit > comboResetTime)
-        {
-            // reset le combo si pas assez rapide 
-            currentCombo = 1; // Reset à 1 parceque c'est le coup qui compte en starter
-            Debug.Log($" New Combo Started: {currentCombo}");
-        }
-        else
-        {
-            //continue le combo si le coup est assez rapide
-            currentCombo++;
-            Debug.Log($"Combo Count: {currentCombo}");
-        }
-
-        // --- Update ---
+        currentCombo++;
+        UpdateCombo(currentCombo);
         lastHitTime = Time.time;
-        
-        OnComboUpdate.Invoke(currentCombo);
     }
 
     public void PlayPunchSound(AudioClip pounchSound)
@@ -172,5 +172,17 @@ public class PunchingBag : MonoBehaviour
             }
         PlayPunchSound(punchClip);
         return;
+    }
+
+    void UpdateCombo(int comboCount)
+    {
+        if (comboCount == 0)
+        {
+            comboText.text = "COMBO";
+        }
+        else
+        {
+            comboText.text = "COMBO: " + comboCount.ToString();;
+        }
     }
 }

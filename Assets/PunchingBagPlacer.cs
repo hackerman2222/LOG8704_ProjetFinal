@@ -178,8 +178,8 @@ public class PunchingBagPlacer : MonoBehaviour
             }
             else 
             {
-                Instantiate(punchingBagPrefab, punchingBagPlacement, Quaternion.identity);
-                SetBagOutline(selectedBag, false);
+                var newBag = Instantiate(punchingBagPrefab, punchingBagPlacement, Quaternion.identity);
+                SetBagOutline(newBag, false);
             }
         }
     }
