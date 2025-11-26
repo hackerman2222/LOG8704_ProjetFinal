@@ -51,7 +51,7 @@ public class PunchingBag : MonoBehaviour
         OnComboUpdate.Invoke(currentCombo); 
     }
 
-    void update() 
+    void Update() 
     {
         if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch)) 
         {
