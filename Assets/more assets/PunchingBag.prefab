@@ -97,7 +97,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2615781539631525011}
   serializedVersion: 4
-  m_Mass: 100
+  m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 20
   m_CenterOfMass: {x: 0, y: -0.7, z: 0}
@@ -129,13 +129,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hapticDuration: 0.15
+  IsLeftHanded: 0
   comboResetTime: 0.8
   currentCombo: 0
   OnComboUpdate:
     m_PersistentCalls:
       m_Calls: []
+  jabForwardDot: 0.75
+  hookSideDot: 0.6
+  uppercutUpDot: 0.6
   audioSource: {fileID: 2967080351068037549}
-  punchClip: {fileID: 8300000, guid: 58a5d36d6b134014ea5623d9802082e2, type: 3}
+  punchClip: {fileID: 8300000, guid: e82879725b40ce444bca27d19a75f42c, type: 3}
+  crossClip: {fileID: 8300000, guid: d0f166575306db84091dc03fce0eff69, type: 3}
+  hookClip: {fileID: 8300000, guid: 1e3312d22540aa14597a1fb4739f2782, type: 3}
+  uppercutClip: {fileID: 8300000, guid: 58a5d36d6b134014ea5623d9802082e2, type: 3}
 --- !u!136 &5844763408894213490
 CapsuleCollider:
   m_ObjectHideFlags: 0

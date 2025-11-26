@@ -2,44 +2,69 @@ using UnityEngine;
 
 public class PunchRecognizer : MonoBehaviour
 {
-    public Transform hand;
-    private Vector3 lastPos;
-    private Vector3 velocity;
+    public OVRInput.Controller controller;
+    public bool isDominantHand = false;
 
-    public float jabThreshold = 1.0f;
-    public float crossThreshold = 2.0f;
-    public float hookThreshold = 1.2f;
+    public float jabThreshold = 1.2f;
+    public float crossThreshold = 1.8f;
+    public float hookThreshold = 1.0f;
     public float uppercutThreshold = 1.0f;
-
-    void Start()
-    {
-        lastPos = hand.position;
-    }
 
     void Update()
     {
-        Vector3 currentPos = hand.position;
-        velocity = (currentPos - lastPos) / Time.deltaTime;
-        lastPos = currentPos;
+        Vector3 vel = OVRInput.GetLocalControllerVelocity(controller);
 
-        RecognizePunch();
+        RecognizePunch(vel);
     }
 
-    void RecognizePunch()
+    void RecognizePunch(Vector3 vel)
     {
-        if (velocity.magnitude < 1f) return; // ignore tiny motion
+        float speed = vel.magnitude;
+        if (speed < 0.5f) return;
+
+        // Normalize for direction checks
+        Vector3 dir = vel.normalized;
+
+        float forwardDot = Vector3.Dot(dir, transform.forward);
+        float rightDot   = Vector3.Dot(dir, transform.right);
+        float upDot      = Vector3.Dot(dir, transform.up);
+
+        // ----------- JAB / CROSS -----------
+        if (forwardDot > 0.7f && speed > jabThreshold) 
+        {
+            if (isDominantHand && speed > crossThreshold)
+                UpdateDebug(vel);
+            else
+                UpdateDebug(vel);
+            return;
+        }
+
+        // ----------- HOOK -----------
+        // big horizontal movement
+        if (Mathf.Abs(rightDot) > 0.7f && speed > hookThreshold)
+        {
+            Debug.Log("HOOK!");
+            return;
+        }
+
+        // ----------- UPPERCUT -----------
+        // upward movement
+        if (upDot > 0.6f && speed > uppercutThreshold)
+        {
+            Debug.Log("UPPERCUT!");
+            return;
+        }
     }
 
-    void UpdateDebug()
+    void UpdateDebug(Vector3 vel)
     {
         if (VRTextDebug.Instance == null) return;
 
         VRTextDebug.Instance.Set(
-            "Vel: " + velocity.magnitude.ToString("F2") + "\n" +
-            "FDot: " + Vector3.Dot(velocity.normalized, hand.forward).ToString("F2") + "\n" +
-            "RDot: " + Vector3.Dot(velocity.normalized, hand.right).ToString("F2") + "\n" +
-            "UDot: " + Vector3.Dot(velocity.normalized, hand.up).ToString("F2")
+            "Vel: " + vel.magnitude.ToString("F2") + "\n" +
+            "Forward Dot: " + Vector3.Dot(vel.normalized, transform.forward).ToString("F2") + "\n" +
+            "Right Dot: " + Vector3.Dot(vel.normalized, transform.right).ToString("F2") + "\n" +
+            "Up Dot: " + Vector3.Dot(vel.normalized, transform.up).ToString("F2")
         );
     }
-
 }
