@@ -65,6 +65,7 @@ public class PunchingBagPlacer : MonoBehaviour
             lineRenderer.SetPosition(0, rightHandAnchor.position);
             lineRenderer.SetPosition(1, bagHit.point);
             hitSomething = false;
+
             if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch)) 
             {
                 if (selectedBag == bagHit.collider.gameObject) 
@@ -178,6 +179,7 @@ public class PunchingBagPlacer : MonoBehaviour
             else 
             {
                 Instantiate(punchingBagPrefab, punchingBagPlacement, Quaternion.identity);
+                SetBagOutline(selectedBag, false);
             }
         }
     }
