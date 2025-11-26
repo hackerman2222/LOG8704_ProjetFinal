@@ -86,7 +86,7 @@ public class PunchingBag : MonoBehaviour
         // better scaling curve
         float intensity = Mathf.Clamp01(Mathf.Pow(impactForce / 1.5f, 2f)); 
 
-        HapticInteractable.Instance.PlayHaptics(controller, intensity, hapticDuration);
+        HapticInteractable.Instance.PlayHaptics(controller, 0.75f, hapticDuration);
         
         DetectPunch(handVel, collision.collider.transform);
 
