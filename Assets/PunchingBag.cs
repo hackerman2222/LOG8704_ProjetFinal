@@ -55,7 +55,7 @@ public class PunchingBag : MonoBehaviour
     {
         if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch)) 
         {
-            IsLeftPunch = !IsLeftPunch;
+            IsLeftHanded = !IsLeftHanded;
         }
     }
 
