@@ -13,6 +13,8 @@ public class PunchingBagPlacer : MonoBehaviour
     public Transform leftHandAnchor; 
     public LayerMask floorLayer;
     public float maxDistance = 10f;
+    public AudioSource audioSource;
+    public AudioClip clickClip;
 
     // Visual ray objects
     public LineRenderer lineRenderer;
@@ -92,7 +94,8 @@ public class PunchingBagPlacer : MonoBehaviour
             lineRenderer.SetPosition(1, bagHit.point);
             hitSomething = false;
 
-            if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch)) 
+            if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || 
+            OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch)) 
             {
                 if (selectedBag == bagHit.collider.gameObject) 
                 {
@@ -108,13 +111,15 @@ public class PunchingBagPlacer : MonoBehaviour
                     selectedBag = bagHit.collider.gameObject;
                     SetBagOutline(selectedBag, true);
                 }
+                audioSource.PlayOneShot(clickClip);
             }
         }
 
-        if (selectedBag != null && OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch)) 
+        if (selectedBag != null && (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch))) 
         {
             Destroy(selectedBag);
             selectedBag = null;
+            audioSource.PlayOneShot(clickClip);
         }
         
         // --- Draw Ray ---
@@ -193,7 +198,8 @@ public class PunchingBagPlacer : MonoBehaviour
         if (hitSomething &&
             canPlace && 
             anchor.AnchorLabels[0] == "FLOOR" &&
-            OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
+            (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) ||
+            OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)))
         {
             punchingBagPlacement = new Vector3(hit.point.x, hit.point.y + heightAdjust, hit.point.z);
             if (selectedBag != null) 
@@ -207,6 +213,7 @@ public class PunchingBagPlacer : MonoBehaviour
                 var newBag = Instantiate(punchingBagPrefab, punchingBagPlacement, Quaternion.identity);
                 SetBagOutline(newBag, false);
             }
+            audioSource.PlayOneShot(clickClip);
         }
     }
 
