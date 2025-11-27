@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-
+        GlobalSettings.Instance.IsMenuOpen = true;
         fullUI.SetActive(true);
         
         foreach (var panel in panelList) 
@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviour
             panel.SetActive(false);
         }
         activePanel = null;
+        GlobalSettings.Instance.IsMenuOpen = false;
         fullUI.SetActive(false);
     }
 

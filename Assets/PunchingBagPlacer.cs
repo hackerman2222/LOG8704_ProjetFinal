@@ -54,6 +54,20 @@ public class PunchingBagPlacer : MonoBehaviour
 
     void Update()
     {
+        bool isMenuOpened = GlobalSettings.Instance.IsMenuOpen;
+        if (isMenuOpened)
+        {
+            if (lineRenderer != null) lineRenderer.enabled = false;
+            if (hitIndicator != null) hitIndicator.SetActive(false);
+
+            if (redPreview != null) redPreview.SetActive(false);
+            if (greenPreview != null) greenPreview.SetActive(false);
+            return;
+        }
+
+        if (lineRenderer != null) lineRenderer.enabled = true;
+        if (hitIndicator != null) hitIndicator.SetActive(true);
+
         Ray ray = new Ray(rightHandAnchor.position, rightHandAnchor.forward);
 
         MRUKRoom room = MRUK.Instance.GetCurrentRoom();

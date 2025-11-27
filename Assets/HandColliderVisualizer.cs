@@ -4,23 +4,56 @@ public class HandColliderVisualizer : MonoBehaviour
 {
     public Color debugColor = new Color(1, 0, 0, 0.4f); // red transparent
 
+    private Collider col;
+    private MeshRenderer vis;
+    private bool lastMenuState = false;
+
     void Start()
     {
-        SphereCollider col = GetComponent<SphereCollider>();
+        col = GetComponent<SphereCollider>(); // assign to class variable
         if (!col) return;
 
-        GameObject vis = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        vis.transform.SetParent(this.transform);
-        vis.transform.localPosition = col.center;
-        vis.transform.localScale = Vector3.one * col.radius * 2f;
+        GameObject visualGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        visualGO.transform.SetParent(this.transform);
+        visualGO.transform.localPosition = col.bounds.center - transform.position;
+        visualGO.transform.localScale = Vector3.one * col.bounds.size.x; // roughly match radius
 
         // Make it transparent
         var mat = new Material(Shader.Find("Universal Render Pipeline/Lit"));
         mat.color = debugColor;
         mat.SetFloat("_Surface", 1);   // transparent
         mat.SetFloat("_Blend", 0);
-        vis.GetComponent<MeshRenderer>().material = mat;
 
-        Destroy(vis.GetComponent<Collider>()); // keep only the visuals
+        vis = visualGO.GetComponent<MeshRenderer>(); // assign to class variable
+        vis.material = mat;
+
+        Destroy(visualGO.GetComponent<Collider>()); // keep only visuals
+    }
+
+    void Update()
+    {
+        bool isOpen = GlobalSettings.Instance.IsMenuOpen;
+        if (isOpen)
+        {
+            DisableColliders();
+        }
+    }
+
+    public void DisableColliders()
+    {
+        if (col != null)
+            col.enabled = false;
+
+        if (vis != null)
+            vis.enabled = false;
+    }
+
+    public void ActivateColliders()
+    {
+        if (col != null)
+            col.enabled = true;
+
+        if (vis != null)
+            vis.enabled = true;
     }
 }
