@@ -17,8 +17,7 @@ public class MRPlacementController : MonoBehaviour
 
     void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
-            ToggleEditMode();
+        
     }
 
     public void SetEditMode(bool enabled)

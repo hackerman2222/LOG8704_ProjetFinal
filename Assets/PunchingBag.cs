@@ -15,7 +15,6 @@ public enum PunchType
 public class PunchingBag : MonoBehaviour
 {
     public float hapticDuration = 0.15f;
-    public bool IsLeftHanded = false;
     public Transform textCanvas;
 
     [Header("Combo Settings")]
@@ -43,6 +42,7 @@ public class PunchingBag : MonoBehaviour
     private OVRInput.Controller controller;
     private bool IsLeftPunch = false;
     private TextMeshProUGUI comboText;
+    private bool IsLeftHanded = false;
 
     void Awake() {
     if (comboText == null && textCanvas != null)
@@ -54,14 +54,12 @@ public class PunchingBag : MonoBehaviour
         lastHitTime = 0;
         currentCombo = 1;
         UpdateCombo(currentCombo);
+        IsLeftHanded = GlobalSettings.Instance.IsLeftHanded;
     }
 
     void Update() 
     {
-        if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch)) 
-        {
-            IsLeftHanded = !IsLeftHanded;
-        }
+        IsLeftHanded = GlobalSettings.Instance.IsLeftHanded;
 
         float timeSinceLastHit = Time.time - lastHitTime;
         if (timeSinceLastHit > comboResetTime)
