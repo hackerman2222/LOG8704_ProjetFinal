@@ -18,14 +18,6 @@ public class PunchingBag : MonoBehaviour
     public Transform textCanvas;
     public TextMeshPro comboText;
 
-    [Header("Combo Settings")]
-    [Tooltip("The time (in seconds) allowed between consecutive hits before the combo resets.")]
-    public float comboResetTime = 9f; 
-
-    [Header("Current Combo Data")]
-    [Tooltip("The current number of consecutive hits.")]
-    [SerializeField]
-    private int currentCombo = 0;
 
     private float lastHitTime;
 
@@ -49,6 +41,8 @@ public class PunchingBag : MonoBehaviour
     private bool IsLeftPunch = false;
     private bool IsLeftHanded = false;
     private bool IsVoiceOn = true;
+    private float comboResetTime = 3f; 
+    private int currentCombo = 0;
 
 
     void Start()
@@ -67,7 +61,7 @@ public class PunchingBag : MonoBehaviour
         float timeSinceLastHit = Time.time - lastHitTime;
         if (timeSinceLastHit > comboResetTime)
         {
-            //currentCombo = 0;
+            currentCombo = 0;
             UpdateCombo(currentCombo);
         }
 
@@ -203,11 +197,15 @@ public class PunchingBag : MonoBehaviour
     {
         if (comboCount <= 0)
         {
-            comboText.text = "COMBO";
+            comboText.text = "";
+            comboText.transform.localScale = Vector3.one;
         }
         else
         {
-            comboText.text = "COMBO: " + comboCount.ToString();;
+            comboText.text = comboCount.ToString();;
+
+            float scaleFactor = 1f + Mathf.Min(comboCount * 0.02f, 5f); 
+            comboText.transform.localScale = Vector3.one * scaleFactor;
         }
     }
 }
