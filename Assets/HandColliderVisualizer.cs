@@ -6,7 +6,6 @@ public class HandColliderVisualizer : MonoBehaviour
 
     private Collider col;
     private MeshRenderer vis;
-    private bool lastMenuState = false;
 
     void Start()
     {

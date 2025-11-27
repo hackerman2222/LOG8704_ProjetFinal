@@ -6,6 +6,8 @@ public class GlobalSettings : MonoBehaviour
 
     public bool IsLeftHanded = false;
     public bool IsMenuOpen = false;
+    public bool IsVoiceOn = true;
+    public bool IsFreePractice = false;
 
     void Awake()
     {
@@ -20,5 +22,15 @@ public class GlobalSettings : MonoBehaviour
     public void setMenuState(bool isOpen)
     {
         IsMenuOpen = isOpen;
+    }
+
+    public void ToggleVoice()
+    {
+        IsVoiceOn = !IsVoiceOn;
+    }
+
+    public void setFreePracticeState(bool isPractice)
+    {
+        IsFreePractice = isPractice;
     }
 }

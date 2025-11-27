@@ -31,6 +31,7 @@ public class PunchingBagPlacer : MonoBehaviour
 
     void Start()
     {
+        GlobalSettings.Instance.setFreePracticeState(false);
         if (punchingBagPreview != null) 
         {
             redPreview = Instantiate(punchingBagPreview);

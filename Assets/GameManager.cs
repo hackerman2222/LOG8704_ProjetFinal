@@ -8,10 +8,19 @@ public class GameManager : MonoBehaviour
     public GameObject baseMenuPanel;
     public GameObject dominantHandSelectionPanel;
     public GameObject Settings;
+    public GameObject tutoriel1;
+    public GameObject tutoriel2;
+    public GameObject tutoriel3;
+    public GameObject tutoriel4;
+    public GameObject tutoriel5;
     public GameObject fullUI;
+    public HandColliderVisualizer leftHand;
+    public HandColliderVisualizer rightHand;
+    
 
     private GameObject activePanel;
     private List<GameObject> panelList = new List<GameObject>();
+    private bool IsTutoriel = true;
 
     void Start()
     {
@@ -21,14 +30,18 @@ public class GameManager : MonoBehaviour
         RegisterPanel(baseMenuPanel);
         RegisterPanel(dominantHandSelectionPanel);
         RegisterPanel(Settings);
+        RegisterPanel(tutoriel1);
+        RegisterPanel(tutoriel2);
+        RegisterPanel(tutoriel3);
+        RegisterPanel(tutoriel4);
+        RegisterPanel(tutoriel5);
 
-        activePanel = dominantHandSelectionPanel;
         ShowPanel(dominantHandSelectionPanel);
     }
 
     void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.Start, OVRInput.Controller.LTouch)) 
+        if (OVRInput.GetDown(OVRInput.Button.Start, OVRInput.Controller.LTouch) && !IsTutoriel) 
         {
             if (activePanel == null) 
             {
@@ -37,6 +50,11 @@ public class GameManager : MonoBehaviour
             else 
             {
                 CloseAllMenu();
+                if (GlobalSettings.Instance.IsFreePractice) 
+                {
+                    leftHand.ActivateColliders();
+                    rightHand.ActivateColliders();
+                }
             }
         }
     }
@@ -83,6 +101,19 @@ public class GameManager : MonoBehaviour
         GlobalSettings.Instance.IsMenuOpen = false;
         fullUI.SetActive(false);
     }
+
+    public void EndTutoriel()
+    {
+        ShowPanel(baseMenuPanel);
+        IsTutoriel = false;
+    }
+    
+    public void PlayTutoriel()
+    {
+        IsTutoriel = true;
+        ShowPanel(tutoriel1);
+    }
+    
 
     private void RegisterPanel(GameObject panel)
     {

@@ -39,20 +39,22 @@ public class PunchingBag : MonoBehaviour
     public AudioClip hookClip;
     public AudioClip uppercutClip;
 
+    public AudioClip voicePunchClip;
+    public AudioClip voiceCrossClip;
+    public AudioClip voiceHookClip;
+    public AudioClip voiceUppercutClip;
+
     private OVRInput.Controller controller;
     private bool IsLeftPunch = false;
-    private TextMeshProUGUI comboText;
+    public TextMeshPro comboText;
     private bool IsLeftHanded = false;
+    private bool IsVoiceOn = true;
 
-    void Awake() {
-    if (comboText == null && textCanvas != null)
-        comboText = textCanvas.GetComponentInChildren<TextMeshProUGUI>();
-    }
 
     void Start()
     {
         lastHitTime = 0;
-        currentCombo = 1;
+        currentCombo = 0;
         UpdateCombo(currentCombo);
         IsLeftHanded = GlobalSettings.Instance.IsLeftHanded;
     }
@@ -60,6 +62,7 @@ public class PunchingBag : MonoBehaviour
     void Update() 
     {
         IsLeftHanded = GlobalSettings.Instance.IsLeftHanded;
+        IsVoiceOn = GlobalSettings.Instance.IsVoiceOn;
 
         float timeSinceLastHit = Time.time - lastHitTime;
         if (timeSinceLastHit > comboResetTime)
@@ -136,10 +139,18 @@ public class PunchingBag : MonoBehaviour
                     if (IsLeftPunch)
                     {
                         PlayPunchSound(crossClip);
+                        if (IsVoiceOn) 
+                        {
+                            PlayPunchSound(voiceCrossClip);
+                        }
                     }
                     else 
                     {
                         PlayPunchSound(punchClip);
+                        if (IsVoiceOn) 
+                        {
+                            PlayPunchSound(voicePunchClip);
+                        }
                     }
                 }
                 else 
@@ -147,10 +158,18 @@ public class PunchingBag : MonoBehaviour
                     if (IsLeftPunch)
                     {
                         PlayPunchSound(punchClip);
+                        if (IsVoiceOn) 
+                        {
+                            PlayPunchSound(voicePunchClip);
+                        }
                     }
                     else 
                     {
                         PlayPunchSound(crossClip);
+                        if (IsVoiceOn) 
+                        {
+                            PlayPunchSound(voiceCrossClip);
+                        }
                     }
                 }
                 return;
@@ -159,6 +178,10 @@ public class PunchingBag : MonoBehaviour
         if (rightDot > hookSideDot)
             {
                 PlayPunchSound(hookClip);
+                if (IsVoiceOn) 
+                {
+                    PlayPunchSound(voiceHookClip);
+                }
                 return;
             }
 
@@ -166,6 +189,10 @@ public class PunchingBag : MonoBehaviour
         if (upDot > uppercutUpDot)
             {
                 PlayPunchSound(uppercutClip);
+                if (IsVoiceOn) 
+                {
+                    PlayPunchSound(voiceUppercutClip);
+                }
                 return;
             }
         PlayPunchSound(punchClip);
@@ -176,11 +203,11 @@ public class PunchingBag : MonoBehaviour
     {
         if (comboCount == 0)
         {
-            //comboText.text = "COMBO";
+            comboText.text = "COMBO";
         }
         else
         {
-            //comboText.text = "COMBO: " + comboCount.ToString();;
+            comboText.text = "COMBO: " + comboCount.ToString();;
         }
     }
 }
