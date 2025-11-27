@@ -176,11 +176,11 @@ public class PunchingBag : MonoBehaviour
     {
         if (comboCount == 0)
         {
-            comboText.text = "COMBO";
+            //comboText.text = "COMBO";
         }
         else
         {
-            comboText.text = "COMBO: " + comboCount.ToString();;
+            //comboText.text = "COMBO: " + comboCount.ToString();;
         }
     }
 }

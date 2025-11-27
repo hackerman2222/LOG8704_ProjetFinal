@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public GameObject confirmQuitPanel;
     public GameObject baseMenuPanel;
     public GameObject dominantHandSelectionPanel;
+    public GameObject Settings;
     public GameObject fullUI;
 
     private GameObject activePanel;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
         RegisterPanel(confirmQuitPanel);
         RegisterPanel(baseMenuPanel);
         RegisterPanel(dominantHandSelectionPanel);
+        RegisterPanel(Settings);
 
         activePanel = dominantHandSelectionPanel;
         ShowPanel(dominantHandSelectionPanel);

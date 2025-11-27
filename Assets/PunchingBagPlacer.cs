@@ -9,7 +9,8 @@ public class PunchingBagPlacer : MonoBehaviour
     public GameObject punchingBagPrefab;
     public GameObject punchingBagPreview;
     public GameObject punchingBagGreen;
-    public Transform rightHandAnchor; 
+    public Transform rightHandAnchor;
+    public Transform leftHandAnchor; 
     public LayerMask floorLayer;
     public float maxDistance = 10f;
 
@@ -20,6 +21,7 @@ public class PunchingBagPlacer : MonoBehaviour
     public float heightAdjust = 1.25f;
 
     private Vector3 punchingBagPlacement;
+    private Transform handAnchor;
     private GameObject redPreview;
     private GameObject greenPreview;
     private GameObject selectedBag = null;
@@ -55,6 +57,7 @@ public class PunchingBagPlacer : MonoBehaviour
     void Update()
     {
         bool isMenuOpened = GlobalSettings.Instance.IsMenuOpen;
+        bool IsLeftHanded = GlobalSettings.Instance.IsLeftHanded;
         if (isMenuOpened)
         {
             if (lineRenderer != null) lineRenderer.enabled = false;
@@ -68,15 +71,24 @@ public class PunchingBagPlacer : MonoBehaviour
         if (lineRenderer != null) lineRenderer.enabled = true;
         if (hitIndicator != null) hitIndicator.SetActive(true);
 
-        Ray ray = new Ray(rightHandAnchor.position, rightHandAnchor.forward);
+        if (IsLeftHanded) 
+        {
+            handAnchor = leftHandAnchor;
+        }
+        else 
+        {
+            handAnchor = rightHandAnchor;
+        }
+
+        Ray ray = new Ray(handAnchor.position, handAnchor.forward);
 
         MRUKRoom room = MRUK.Instance.GetCurrentRoom();
-        bool hitBag = Physics.Raycast(rightHandAnchor.position, rightHandAnchor.forward, out RaycastHit bagHit, maxDistance);
+        bool hitBag = Physics.Raycast(handAnchor.position, handAnchor.forward, out RaycastHit bagHit, maxDistance);
         bool hitSomething = room.Raycast(ray, maxDistance, out RaycastHit hit, out MRUKAnchor anchor);
 
         if (hitBag && bagHit.collider.CompareTag("Bag")) 
         {
-            lineRenderer.SetPosition(0, rightHandAnchor.position);
+            lineRenderer.SetPosition(0, handAnchor.position);
             lineRenderer.SetPosition(1, bagHit.point);
             hitSomething = false;
 
