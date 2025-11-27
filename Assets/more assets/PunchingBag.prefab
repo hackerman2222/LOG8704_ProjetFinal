@@ -436,6 +436,12 @@ MonoBehaviour:
   voiceCrossClip: {fileID: 8300000, guid: 05f553b67dce8ed44ab6047a862436fb, type: 3}
   voiceHookClip: {fileID: 8300000, guid: 5ab240022a8b40a4e83b6f437e1ae414, type: 3}
   voiceUppercutClip: {fileID: 8300000, guid: abd476abe136e5347b2f1f3a4192d819, type: 3}
+  voice50punch: {fileID: 8300000, guid: 71eaebfd32f5a894ca64f8b5b57e9562, type: 3}
+  voice100punch: {fileID: 8300000, guid: 729f7a49c6a1aa44cb600133f6d397cb, type: 3}
+  voice150punch: {fileID: 0}
+  voice200punch: {fileID: 8300000, guid: e914f133a6ab4e44296fc44a458ab16b, type: 3}
+  voice250punch: {fileID: 8300000, guid: 5b46c9b32917a4e4c98df204d0de6265, type: 3}
+  voice500punch: {fileID: 8300000, guid: 03382a4f21d4e9a4eb7f64faf96e0eeb, type: 3}
 --- !u!136 &5844763408894213490
 CapsuleCollider:
   m_ObjectHideFlags: 0

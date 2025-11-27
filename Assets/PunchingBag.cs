@@ -37,6 +37,12 @@ public class PunchingBag : MonoBehaviour
     public AudioClip voiceHookClip;
     public AudioClip voiceUppercutClip;
 
+    public AudioClip voice50punch;
+    public AudioClip voice100punch;
+    public AudioClip voice200punch;
+    public AudioClip voice250punch;
+    public AudioClip voice500punch;
+
     private OVRInput.Controller controller;
     private bool IsLeftPunch = false;
     private bool IsLeftHanded = false;
@@ -206,6 +212,27 @@ public class PunchingBag : MonoBehaviour
 
             float scaleFactor = 1f + Mathf.Min(comboCount * 0.02f, 5f); 
             comboText.transform.localScale = Vector3.one * scaleFactor;
+
+            if (comboCount == 50 && IsVoiceOn) 
+            {
+                PlayPunchSound(voice50punch);
+            }
+            if (comboCount == 100 && IsVoiceOn) 
+            {
+                PlayPunchSound(voice100punch);
+            }
+            if (comboCount == 200 && IsVoiceOn) 
+            {
+                PlayPunchSound(voice200punch);
+            }
+            if (comboCount == 250 && IsVoiceOn) 
+            {
+                PlayPunchSound(voice250punch);
+            }
+            if (comboCount == 500 && IsVoiceOn) 
+            {
+                PlayPunchSound(voice500punch);
+            }
         }
     }
 }
