@@ -16,6 +16,7 @@ public class PunchingBag : MonoBehaviour
 {
     public float hapticDuration = 0.15f;
     public Transform textCanvas;
+    public TextMeshPro comboText;
 
     [Header("Combo Settings")]
     [Tooltip("The time (in seconds) allowed between consecutive hits before the combo resets.")]
@@ -46,7 +47,6 @@ public class PunchingBag : MonoBehaviour
 
     private OVRInput.Controller controller;
     private bool IsLeftPunch = false;
-    public TextMeshPro comboText;
     private bool IsLeftHanded = false;
     private bool IsVoiceOn = true;
 
@@ -201,7 +201,7 @@ public class PunchingBag : MonoBehaviour
 
     void UpdateCombo(int comboCount)
     {
-        if (comboCount == 0)
+        if (comboCount <= 0)
         {
             comboText.text = "COMBO";
         }
