@@ -103,12 +103,12 @@ public class PunchingBag : MonoBehaviour
         float impactForce = (handVel - bagVel).magnitude;
 
         // better scaling curve
-        float intensity = Mathf.Clamp01(Mathf.Pow(impactForce / 1.5f, 2f)); 
+        float intensity = 0.5f + Mathf.Clamp01(Mathf.Pow(impactForce / 1.5f, 2f)); 
 
-        HapticInteractable.Instance.PlayHaptics(controller, 0.75f, hapticDuration);
+        HapticInteractable.Instance.PlayHaptics(controller, intensity, hapticDuration);
         
         DetectPunch(handVel, collision.collider.transform);
-        currentCombo++;
+        currentCombo = currentCombo + 1;
         UpdateCombo(currentCombo);
         lastHitTime = Time.time;
     }
